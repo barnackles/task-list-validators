@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 @Validated
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/api/v1/tasks")
 public class TaskController {
+
     @GetMapping("/{priority}")
     public ResponseEntity<List<TaskDto>> getFiltered(@PathVariable @Min(1) @Max(5) int priority) {
         List<TaskDto> dtos = TaskRepository.getRepository()
