@@ -1,6 +1,7 @@
 package com.kodilla.tasklist;
 
 import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,11 @@ public class TaskController {
                 .filter(task -> task.getPriority() == priority)
                 .collect(Collectors.toList());
         return new ResponseEntity<>(dtos, HttpStatus.OK);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<TaskDto> create(@Valid @RequestBody TaskDto taskDto) {
+        return new ResponseEntity<>(taskDto, HttpStatus.OK);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
