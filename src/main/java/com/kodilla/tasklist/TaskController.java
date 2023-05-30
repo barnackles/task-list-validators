@@ -6,7 +6,10 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -41,5 +44,19 @@ public class TaskController {
         String[] errorArray = exc.getMessage().split(":");
         resultMap.put(errorArray[0], errorArray[1]);
         return new ResponseEntity<>(resultMap, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ResponseEntity<Map<String, String>> handleMethodArgumentNotValidExceptions(MethodArgumentNotValidException exc) {
+        Map<String, String> errorsMap = new HashMap<>();
+        List<ObjectError> errorsList = exc.getBindingResult().getAllErrors();
+        errorsList.forEach((errorObject) -> {
+            FieldError fieldError = (FieldError) errorObject;
+            String name = fieldError.getField();
+            String message = errorObject.getDefaultMessage();
+            errorsMap.put(name, message);
+        });
+        return new ResponseEntity<>(errorsMap, HttpStatus.BAD_REQUEST);
     }
 }
