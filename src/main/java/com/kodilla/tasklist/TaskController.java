@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Validated
@@ -34,7 +36,10 @@ public class TaskController {
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    ResponseEntity<String> handleException(ConstraintViolationException exc) {
-        return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
+    ResponseEntity<Map<String, String>> handleException(ConstraintViolationException exc) {
+        Map<String, String> resultMap = new HashMap<>();
+        String[] errorArray = exc.getMessage().split(":");
+        resultMap.put(errorArray[0], errorArray[1]);
+        return new ResponseEntity<>(resultMap, HttpStatus.BAD_REQUEST);
     }
 }
