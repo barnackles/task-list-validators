@@ -9,6 +9,7 @@ import java.time.LocalDate;
 @Value
 public class TaskDto {
     @NotNull
+    @DateMin("2021-01-01")
     LocalDate when;
     @NotNull
     String title;
